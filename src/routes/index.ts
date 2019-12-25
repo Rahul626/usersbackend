@@ -9,6 +9,10 @@ export default function routeDefinition(server: Server) {
 
   const post = new PostController();
   server.post("/post", post.addPost);
-  server.post("/post/:id", post.updatePost);
+  server.post("/allposts", post.getAll);
+  server.post("/single/:id", post.getOne);
+  server.patch("/post/:id", post.updatePost);
+  server.post("/delete/:id", post.deletePost);
+
   // server.post("/:id", post.);
 }

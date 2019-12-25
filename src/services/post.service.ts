@@ -2,14 +2,14 @@ import { IPost } from "./../models/dbtypes.d";
 import BaseService from "./../policies/BaseService";
 import { db } from "../models/db";
 
-export default class UserService extends BaseService {
+export class PostService extends BaseService {
   constructor() {
     super();
   }
 
-  getOne = async (PostId: string) => {
+  getOne = async (PostId: IPost) => {
     try {
-      let result = await db.posts.findOne(PostId);
+      let result = await db.posts.findById(PostId);
       if (result == null) throw "post not found";
       return this.RESP(true, "post not found");
     } catch (error) {
@@ -17,20 +17,21 @@ export default class UserService extends BaseService {
       throw error;
     }
   };
-  getAll = async (Posts: string) => {
+  getAll = async (Posts: IPost) => {
     try {
-      let result = await db.posts.find(Posts);
+      let result = await db.posts.find();
       if (result == null) throw "post not found";
-      return this.RESP(true, "post not found");
+      return result;
+      // return this.RESP(true, "post not found");
     } catch (error) {
       this.log.error(error);
       throw error;
     }
   };
 
-  addPost = async (Posts: IPost) => {
+  addPost = async (posts: IPost) => {
     try {
-      let result = await db.posts.create(Posts);
+      let result = await db.posts.create(posts);
       return this.RESP(true, "post added", result);
     } catch (error) {
       this.log.error(error);
@@ -42,7 +43,8 @@ export default class UserService extends BaseService {
     try {
       let result = await db.posts.findByIdAndUpdate(PostId, Post, { new: true });
       if (result == null) throw "post not found";
-      return this.RESP(true, "post not updated ", result);
+
+      return this.RESP(true, "post updated ", result);
     } catch (error) {
       this.log.error(error);
       throw error;
@@ -51,10 +53,10 @@ export default class UserService extends BaseService {
 
   deletePost = async (PostId: string) => {
     try {
-      let result = await db.posts.findByIdAndRemove(PostId);
+      let result = await db.posts.findByIdAndRemove(PostId).exec();
       if (result == null) throw "post not found";
 
-      return this.RESP(true, "post added");
+      return this.RESP(true, "post not deleted yet");
     } catch (error) {
       this.log.error(error);
       throw error;

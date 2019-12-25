@@ -44,7 +44,7 @@ export default class BaseController {
   protected ErrorResult = (error: any, req: Request, res: Response, next: Next) => {
     let finalMessage: string;
     if (error.errors !== undefined && error.errors.length > 0) {
-      error.errors.map((x) => this.log.error(x));
+      error.errors.map(x => this.log.error(x));
     }
     if (typeof error === "string") {
       finalMessage = error;
@@ -53,11 +53,11 @@ export default class BaseController {
     }
     let response = {
       success: false,
-      message: finalMessage
+      message: finalMessage,
     };
 
     this.log.error(finalMessage);
     res.send(500, response);
     return next();
-  }
+  };
 }

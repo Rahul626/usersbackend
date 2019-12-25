@@ -1,19 +1,48 @@
 import BaseController from "../policies/BaseController";
 import { Request, Response, Next } from "restify";
 import { IPost } from "src/models/dbtypes";
+import { PostService } from "./../services/post.service";
 
 export default class PostController extends BaseController {
-  constructor() {
+  constructor(private postService = new PostService()) {
     super();
   }
 
   addPost = async (req: Request, res: Response, next: Next) => {
     try {
-      let posts = new posts({
-        title: req.body.title,
-        content: req.body.content,
-      });
-      return posts;x
+      let Post: IPost = req.body;
+      if (Post.title == null) throw "Give a title first!";
+
+      let result = await this.postService.addPost(Post);
+      return res.send(result);
+
+      // when no error
+      // todo call service for data upodate in database
+    } catch (error) {
+      this.ErrorResult(error, req, res, next);
+    }
+  };
+  getOne = async (req: Request, res: Response, next: Next) => {
+    try {
+      let PostId: IPost = req.body.id;
+      let result = await this.postService.getOne(PostId);
+      return res.send(result);
+
+      // when no error
+      // todo call service for data upodate in database
+    } catch (error) {
+      this.ErrorResult(error, req, res, next);
+    }
+  };
+
+  getAll = async (req: Request, res: Response, next: Next) => {
+    try {
+      let Post: IPost = req.body;
+      let result = await this.postService.getAll(Post);
+      return res.send(result);
+
+      // when no error
+      // todo call service for data upodate in database
     } catch (error) {
       this.ErrorResult(error, req, res, next);
     }
@@ -21,21 +50,27 @@ export default class PostController extends BaseController {
 
   updatePost = async (req: Request, res: Response, next: Next) => {
     try {
-      let post;
-      if (post.title == null) throw "title is required";
+      let post = req.body;
+      let postId = req.params.id;
+      if (postId == null) throw "post not found";
+      let result = await this.postService.updatePost(postId, post);
+      return res.send(result);
     } catch (error) {
       this.ErrorResult(error, req, res, next);
     }
+  };
 
-    // deletePost = async (PostId: string) => {
-    //   try {
-    //     let result = await db.posts.findByIdAndRemove(PostId);
-    //     if (result == null) throw "post not found";
-
-    //     return this.RESP(true, "post added");
-    //   } catch (error) {
-    //     this.log.error(error);
-    //     throw error;
-    //   }
+  deletePost = async (req: Request, res: Response, next: Next) => {
+    try {
+      let post = req.body;
+      let postId = req.params.id;
+      if (postId == null) throw "post not found";
+      let result = await this.postService.deletePost(postId);
+      console.log(result);
+      // return this.RESP(true, "post added");
+    } catch (error) {
+      this.log.error(error);
+      throw error;
+    }
   };
 }
