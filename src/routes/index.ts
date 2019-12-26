@@ -6,11 +6,12 @@ export default function routeDefinition(server: Server) {
   const user = new UserController();
   server.post("/signup", user.addUser);
   server.post("/login", user.userLogin);
+  server.post("/allusers", user.allusers);
 
   const post = new PostController();
   server.post("/post", post.addPost);
   server.post("/allposts", post.getAll);
-  server.post("/single/:id", post.getOne);
+  server.post("/singlepost/:id", post.getOne);
   server.patch("/post/:id", post.updatePost);
   server.post("/delete/:id", post.deletePost);
 

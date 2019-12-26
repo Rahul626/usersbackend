@@ -26,12 +26,24 @@ export default class UserService extends BaseService {
       throw error;
     }
   };
-  userLogin = async (user: IUser, req, res) => {
+  userLogin = async (user: IUser) => {
     try {
       let result = await db.users.findOne({ email: user.email }).exec();
-      if (this._.isNil(result)) return this.RESP(false, "user not found");
-      if (user.password !== result.password) return this.RESP(false, "password miss match not found");
+      if (this._.isNil(result)) return this.RESP(false, "You haven't registered");
+      if (user.password !== result.password) return this.RESP(false, "password missmatch! try again");
+      if (user.email !== result.email) return this.RESP(false, "You have not registered! ,register with us");
       return this.RESP(true, "user loggedin successfully", result);
+    } catch (error) {
+      this.log.error(error);
+      throw error;
+    }
+  };
+
+  allusers = async (user: IUser) => {
+    try {
+      let result = await db.users.find().exec();
+      return result;
+      return this.RESP(true, "users not found");
     } catch (error) {
       this.log.error(error);
       throw error;

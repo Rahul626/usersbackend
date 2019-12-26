@@ -24,9 +24,10 @@ export default class PostController extends BaseController {
   };
   getOne = async (req: Request, res: Response, next: Next) => {
     try {
-      let PostId: IPost = req.body.id;
-      let result = await this.postService.getOne(PostId);
-      return res.send(result);
+      let post: IPost = req.body;
+      let postId: IPost = req.params.id;
+      let result = await this.postService.getOne(postId);
+      res.send(result);
 
       // when no error
       // todo call service for data upodate in database
@@ -39,7 +40,7 @@ export default class PostController extends BaseController {
     try {
       let Post: IPost = req.body;
       let result = await this.postService.getAll(Post);
-      return res.send(result);
+      res.send(result);
 
       // when no error
       // todo call service for data upodate in database
